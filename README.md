@@ -31,7 +31,7 @@ yazılım geliştirme, DevOps ve Cloud süreçlerini uygulamalı olarak öğrenm
 *(Geliştirme ilerledikçe güncellenecektir.)*
 
 ## 🔗 Bağlantılar
-- **Kanban Panosu:** BURAYA_PANO_LINKI
+- **Kanban Panosu:** https://github.com/users/IbrahimHalilCavas/projects/2
 - **Canlı Uygulama:** *(6. haftada eklenecek)*
 
 ## 👤 Geliştirici
