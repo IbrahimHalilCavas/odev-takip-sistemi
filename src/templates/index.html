@@ -3,6 +3,16 @@
 {% block content %}
 <h2>Ödevlerim</h2>
 
+<form method="get">
+  <label for="filtre">Duruma göre filtrele:</label>
+  <select id="filtre" name="status" onchange="this.form.submit()">
+    <option value="">Tümü</option>
+    {% for durum in durumlar %}
+    <option value="{{ durum }}" {% if durum == secili_durum %}selected{% endif %}>{{ durum }}</option>
+    {% endfor %}
+  </select>
+</form>
+
 {% if odevler %}
 <table>
   <thead>
@@ -22,11 +32,21 @@
       </td>
       <td>{{ odev.course or "-" }}</td>
       <td>{{ odev.due_date | tarih }}</td>
-      <td>{{ odev.status }}</td>
+      <td>
+        <form method="post" action="{{ url_for('update_status', assignment_id=odev.id) }}">
+          <select name="status" onchange="this.form.submit()">
+            {% for durum in durumlar %}
+            <option value="{{ durum }}" {% if durum == odev.status %}selected{% endif %}>{{ durum }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+{% elif secili_durum %}
+<p>"{{ secili_durum }}" durumunda ödev yok.</p>
 {% else %}
 <p>Henüz ödev yok. <a href="{{ url_for('add') }}">İlk ödevini ekle</a>.</p>
 {% endif %}
