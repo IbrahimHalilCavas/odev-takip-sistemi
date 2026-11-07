@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Ödevlerim</h2>
+
+{% if odevler %}
+<table>
+  <thead>
+    <tr>
+      <th>Başlık</th>
+      <th>Ders</th>
+      <th>Teslim Tarihi</th>
+      <th>Durum</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for odev in odevler %}
+    <tr>
+      <td>
+        <strong>{{ odev.title }}</strong>
+        {% if odev.description %}<br><small>{{ odev.description }}</small>{% endif %}
+      </td>
+      <td>{{ odev.course or "-" }}</td>
+      <td>{{ odev.due_date | tarih }}</td>
+      <td>{{ odev.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Henüz ödev yok. <a href="{{ url_for('add') }}">İlk ödevini ekle</a>.</p>
+{% endif %}
+{% endblock %}
