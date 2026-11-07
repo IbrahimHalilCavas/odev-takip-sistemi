@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ödev Takip Sistemi</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 16px; color: #222; }
+    nav a { margin-right: 12px; }
+    .hata { background: #fde2e2; color: #a30000; padding: 8px 12px; border-radius: 6px; }
+    .basari { background: #e2f7e2; color: #116611; padding: 8px 12px; border-radius: 6px; }
+    form label { display: block; margin-top: 12px; font-weight: bold; }
+    form input, form textarea { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; }
+    button { margin-top: 16px; padding: 8px 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>📚 Ödev Takip Sistemi</h1>
+  <nav>
+    <a href="{{ url_for('index') }}">Ana Sayfa</a>
+    <a href="{{ url_for('add') }}">+ Yeni Ödev</a>
+  </nav>
+  <hr>
+
+  {% with mesajlar = get_flashed_messages(with_categories=true) %}
+    {% for kategori, mesaj in mesajlar %}
+      <p class="{{ kategori }}">{{ mesaj }}</p>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</body>
+</html>

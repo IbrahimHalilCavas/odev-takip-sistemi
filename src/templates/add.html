@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Yeni Ödev Ekle</h2>
+
+<form method="post">
+  <label for="title">Başlık *</label>
+  <input type="text" id="title" name="title" value="{{ form.get('title', '') }}">
+
+  <label for="course">Ders Adı</label>
+  <input type="text" id="course" name="course" value="{{ form.get('course', '') }}">
+
+  <label for="description">Açıklama</label>
+  <textarea id="description" name="description" rows="3">{{ form.get('description', '') }}</textarea>
+
+  <label for="due_date">Teslim Tarihi *</label>
+  <input type="date" id="due_date" name="due_date" value="{{ form.get('due_date', '') }}">
+
+  <button type="submit">Kaydet</button>
+</form>
+{% endblock %}
