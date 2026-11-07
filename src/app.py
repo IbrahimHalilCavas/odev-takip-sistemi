@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from flask import Flask, flash, redirect, render_template, request, url_for
 
@@ -12,9 +13,17 @@ app.secret_key = os.environ.get("SECRET_KEY", "gelistirme-anahtari")
 database.init_db()
 
 
+@app.template_filter("tarih")
+def tarih_formatla(deger):
+    """2026-11-20 biçimindeki tarihi 20.11.2026 olarak gösterir."""
+    return datetime.strptime(deger, "%Y-%m-%d").strftime("%d.%m.%Y")
+
+
 @app.route("/")
 def index():
-    return "Öğrenci Ödev Takip Sistemi çalışıyor!"
+    """F2: Ödevleri listeleme."""
+    odevler = database.get_assignments()
+    return render_template("index.html", odevler=odevler)
 
 
 @app.route("/add", methods=["GET", "POST"])
@@ -36,7 +45,7 @@ def add():
             f"Ödev eklendi! Toplam ödev sayısı: {database.count_assignments()}",
             "basari",
         )
-        return redirect(url_for("add"))
+        return redirect(url_for("index"))
 
     return render_template("add.html", form={})
 

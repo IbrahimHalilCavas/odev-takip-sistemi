@@ -53,3 +53,15 @@ def count_assignments():
     count = conn.execute("SELECT COUNT(*) FROM assignments").fetchone()[0]
     conn.close()
     return count
+
+
+
+
+def get_assignments():
+    """F2: Tüm ödevleri teslim tarihine göre sıralı döndürür."""
+    conn = get_connection()
+    rows = conn.execute(
+        "SELECT * FROM assignments ORDER BY due_date ASC"
+    ).fetchall()
+    conn.close()
+    return rows
