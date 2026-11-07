@@ -7,6 +7,9 @@ DB_PATH = os.environ.get(
     "DB_PATH", os.path.join(os.path.dirname(__file__), "odevler.db")
 )
 
+# Ödevin alabileceği durumlar
+DURUMLAR = ["Bekliyor", "Devam Ediyor", "Teslim Edildi"]
+
 
 def get_connection():
     """SQLite bağlantısı açar. Satırlara sütun adıyla erişilebilir."""
@@ -57,11 +60,32 @@ def count_assignments():
 
 
 
-def get_assignments():
-    """F2: Tüm ödevleri teslim tarihine göre sıralı döndürür."""
+def get_assignments(status=None):
+    """F2 + F3: Ödevleri teslim tarihine göre sıralı döndürür.
+    status verilirse sadece o durumdaki ödevleri getirir."""
     conn = get_connection()
-    rows = conn.execute(
-        "SELECT * FROM assignments ORDER BY due_date ASC"
-    ).fetchall()
+    if status:
+        rows = conn.execute(
+            "SELECT * FROM assignments WHERE status = ? ORDER BY due_date ASC",
+            (status,),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT * FROM assignments ORDER BY due_date ASC"
+        ).fetchall()
     conn.close()
     return rows
+
+
+def update_status(assignment_id, status):
+    """F3: Ödevin durumunu günceller. Geçersiz durumda False döndürür."""
+    if status not in DURUMLAR:
+        return False
+    conn = get_connection()
+    cursor = conn.execute(
+        "UPDATE assignments SET status = ? WHERE id = ?",
+        (status, assignment_id),
+    )
+    conn.commit()
+    conn.close()
+    return cursor.rowcount > 0

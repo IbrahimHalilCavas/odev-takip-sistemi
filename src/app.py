@@ -21,9 +21,26 @@ def tarih_formatla(deger):
 
 @app.route("/")
 def index():
-    """F2: Ödevleri listeleme."""
-    odevler = database.get_assignments()
-    return render_template("index.html", odevler=odevler)
+    """F2 + F3: Ödevleri listeleme ve duruma göre filtreleme."""
+    secili_durum = request.args.get("status", "")
+    odevler = database.get_assignments(secili_durum or None)
+    return render_template(
+        "index.html",
+        odevler=odevler,
+        durumlar=database.DURUMLAR,
+        secili_durum=secili_durum,
+    )
+
+
+@app.route("/status/<int:assignment_id>", methods=["POST"])
+def update_status(assignment_id):
+    """F3: Ödev durumunu güncelleme."""
+    yeni_durum = request.form.get("status", "")
+    if database.update_status(assignment_id, yeni_durum):
+        flash("Ödev durumu güncellendi.", "basari")
+    else:
+        flash("Durum güncellenemedi.", "hata")
+    return redirect(url_for("index"))
 
 
 @app.route("/add", methods=["GET", "POST"])
