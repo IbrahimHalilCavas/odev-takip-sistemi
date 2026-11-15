@@ -53,6 +53,22 @@ python src/app.py
 Uygulama `http://127.0.0.1:5000` adresinde açılır.
 Sağlık kontrolü: `http://127.0.0.1:5000/health`
 
+### 🐳 Docker ile Çalıştırma
+
+```bash
+# Image oluştur
+docker build -t odev-takip-sistemi .
+
+# Container çalıştır (veriler odev-veri volume'unda kalıcı tutulur)
+docker run -d -p 5000:5000 -v odev-veri:/app/data --name odev-app odev-takip-sistemi
+
+# Logları izle
+docker logs -f odev-app
+
+# Durdur ve sil
+docker rm -f odev-app
+```
+
 ### Ortam Değişkenleri
 | Değişken | Açıklama | Varsayılan |
 |---|---|---|
