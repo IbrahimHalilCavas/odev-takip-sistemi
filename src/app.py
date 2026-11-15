@@ -4,10 +4,13 @@ from datetime import datetime
 from flask import Flask, abort, flash, redirect, render_template, request, url_for
 
 import database
+from kurallar import teslim_uyarisi
 
 app = Flask(__name__)
 # Flash mesajları için gizli anahtar. Canlı ortamda ortam değişkeninden okunacak.
 app.secret_key = os.environ.get("SECRET_KEY", "gelistirme-anahtari")
+# F5: Şablonlarda teslim_uyarisi() fonksiyonu kullanılabilsin
+app.jinja_env.globals["teslim_uyarisi"] = teslim_uyarisi
 
 # Uygulama açılırken tablo yoksa oluştur
 database.init_db()
