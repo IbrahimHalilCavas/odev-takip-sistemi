@@ -1,5 +1,7 @@
 # 📚 Öğrenci Ödev Takip Sistemi
 
+![CI](https://github.com/IbrahimHalilCavas/odev-takip-sistemi/actions/workflows/ci.yml/badge.svg)
+
 Öğrencilerin ödevlerini ve teslim tarihlerini yönetebildiği küçük ölçekli bir web uygulaması.
 Bu proje, Beykoz Üniversitesi **Modern Yazılım Mühendisliği – Bulut ve DevOps** dersi kapsamında,
 yazılım geliştirme, DevOps ve Cloud süreçlerini uygulamalı olarak öğrenmek amacıyla geliştirilmektedir.
