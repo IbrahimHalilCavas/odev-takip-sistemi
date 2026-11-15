@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import Flask, abort, flash, redirect, render_template, request, url_for
 
 import database
 
@@ -66,6 +66,44 @@ def add():
 
     return render_template("add.html", form={})
 
+@app.route("/edit/<int:assignment_id>", methods=["GET", "POST"])
+def edit(assignment_id):
+    """F4: Ödev düzenleme."""
+    odev = database.get_assignment(assignment_id)
+    if odev is None:
+        abort(404)
+
+    if request.method == "POST":
+        title = request.form.get("title", "").strip()
+        course = request.form.get("course", "").strip()
+        description = request.form.get("description", "").strip()
+        due_date = request.form.get("due_date", "").strip()
+
+        if not title or not due_date:
+            flash("Başlık ve teslim tarihi zorunludur.", "hata")
+            return render_template(
+                "add.html", form=request.form,
+                baslik="Ödevi Düzenle", buton="Güncelle",
+            ), 400
+
+        database.update_assignment(assignment_id, title, course, description, due_date)
+        flash("Ödev güncellendi.", "basari")
+        return redirect(url_for("index"))
+
+    return render_template(
+        "add.html", form=dict(odev),
+        baslik="Ödevi Düzenle", buton="Güncelle",
+    )
+
+
+@app.route("/delete/<int:assignment_id>", methods=["POST"])
+def delete(assignment_id):
+    """F4: Ödev silme."""
+    if database.delete_assignment(assignment_id):
+        flash("Ödev silindi.", "basari")
+    else:
+        flash("Ödev bulunamadı.", "hata")
+    return redirect(url_for("index"))
 
 @app.route("/health")
 def health():

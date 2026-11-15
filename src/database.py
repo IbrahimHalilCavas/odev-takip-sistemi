@@ -89,3 +89,36 @@ def update_status(assignment_id, status):
     conn.commit()
     conn.close()
     return cursor.rowcount > 0
+
+def get_assignment(assignment_id):
+    """Tek bir ödevi döndürür. Bulunamazsa None döner."""
+    conn = get_connection()
+    row = conn.execute(
+        "SELECT * FROM assignments WHERE id = ?", (assignment_id,)
+    ).fetchone()
+    conn.close()
+    return row
+
+
+def update_assignment(assignment_id, title, course, description, due_date):
+    """F4: Ödev bilgilerini günceller."""
+    conn = get_connection()
+    cursor = conn.execute(
+        "UPDATE assignments SET title = ?, course = ?, description = ?, due_date = ? "
+        "WHERE id = ?",
+        (title, course, description, due_date, assignment_id),
+    )
+    conn.commit()
+    conn.close()
+    return cursor.rowcount > 0
+
+
+def delete_assignment(assignment_id):
+    """F4: Ödevi siler."""
+    conn = get_connection()
+    cursor = conn.execute(
+        "DELETE FROM assignments WHERE id = ?", (assignment_id,)
+    )
+    conn.commit()
+    conn.close()
+    return cursor.rowcount > 0
