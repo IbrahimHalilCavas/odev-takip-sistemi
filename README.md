@@ -28,7 +28,34 @@ yazılım geliştirme, DevOps ve Cloud süreçlerini uygulamalı olarak öğrenm
 - FR6: Sistem teslim tarihi geçmiş ve yaklaşan ödevleri görsel olarak işaretlemelidir.
 
 ## 🚀 Kurulum ve Çalıştırma
-*(Geliştirme ilerledikçe güncellenecektir.)*
+
+**Gereksinimler:** Python 3.10+ ve Git
+
+```bash
+# 1. Depoyu indir
+git clone https://github.com/IbrahimHalilCavas/odev-takip-sistemi.git
+cd odev-takip-sistemi
+
+# 2. Sanal ortamı oluştur ve etkinleştir
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # macOS / Linux
+
+# 3. Bağımlılıkları kur
+pip install -r requirements.txt
+
+# 4. Uygulamayı çalıştır
+python src/app.py
+```
+
+Uygulama `http://127.0.0.1:5000` adresinde açılır.
+Sağlık kontrolü: `http://127.0.0.1:5000/health`
+
+### Ortam Değişkenleri
+| Değişken | Açıklama | Varsayılan |
+|---|---|---|
+| `DB_PATH` | SQLite veritabanı dosyasının yolu | `src/odevler.db` |
+| `SECRET_KEY` | Flask oturum anahtarı | Geliştirme anahtarı |
 
 ## 🔗 Bağlantılar
 - **Kanban Panosu:** https://github.com/users/IbrahimHalilCavas/projects/2
