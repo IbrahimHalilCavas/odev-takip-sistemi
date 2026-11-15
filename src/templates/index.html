@@ -29,6 +29,12 @@
     <tr>
       <td>
         <strong>{{ odev.title }}</strong>
+                {% set uyari = teslim_uyarisi(odev.due_date, odev.status) %}
+        {% if uyari == "Gecikti" %}
+          <span class="etiket gecikti">⚠ Gecikti</span>
+        {% elif uyari == "Yaklaşıyor" %}
+          <span class="etiket yaklasiyor">⏰ Yaklaşıyor</span>
+        {% endif %}
         {% if odev.description %}<br><small>{{ odev.description }}</small>{% endif %}
       </td>
       <td>{{ odev.course or "-" }}</td>
