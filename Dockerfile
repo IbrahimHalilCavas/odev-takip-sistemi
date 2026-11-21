@@ -20,8 +20,9 @@ RUN useradd --create-home appuser && mkdir -p /app/data && chown -R appuser /app
 USER appuser
 
 # 7. Ayarlar: veritabanı yolu ve port (ortam değişkenleri)
-ENV DB_PATH=/app/data/odevler.db \
-    PORT=5000
+ ENV DB_PATH=/app/data/odevler.db \
+    PORT=5000 \
+    TZ=Europe/Istanbul
 
 EXPOSE 5000
 

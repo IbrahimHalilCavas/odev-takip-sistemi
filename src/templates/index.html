@@ -41,6 +41,7 @@
       <td>{{ odev.due_date | tarih }}</td>
       <td>
         <form method="post" action="{{ url_for('update_status', assignment_id=odev.id) }}">
+                   <input type="hidden" name="filtre" value="{{ secili_durum }}">
           <select name="status" onchange="this.form.submit()">
             {% for durum in durumlar %}
             <option value="{{ durum }}" {% if durum == odev.status %}selected{% endif %}>{{ durum }}</option>

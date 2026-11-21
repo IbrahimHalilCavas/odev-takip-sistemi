@@ -43,6 +43,11 @@ def update_status(assignment_id):
         flash("Ödev durumu güncellendi.", "basari")
     else:
         flash("Durum güncellenemedi.", "hata")
+
+    # Kullanıcı filtreli listedeyse aynı filtreye geri dön
+    filtre = request.form.get("filtre", "")
+    if filtre in database.DURUMLAR:
+        return redirect(url_for("index", status=filtre))
     return redirect(url_for("index"))
 
 

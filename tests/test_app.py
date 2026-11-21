@@ -53,3 +53,17 @@ def test_odev_silinir(client):
     client.post(f"/delete/{odev['id']}")
 
     assert database.count_assignments() == 0
+
+    
+
+def test_durum_guncellemesinden_sonra_filtre_korunur(client):
+    database.add_assignment("Filtre Testi", "", "", "2026-12-01")
+    odev = database.get_assignments()[0]
+
+    yanit = client.post(
+        f"/status/{odev['id']}",
+        data={"status": "Teslim Edildi", "filtre": "Bekliyor"},
+    )
+
+    assert yanit.status_code == 302
+    assert "status=Bekliyor" in yanit.headers["Location"]
