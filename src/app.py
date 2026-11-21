@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime
 
@@ -5,6 +6,13 @@ from flask import Flask, abort, flash, redirect, render_template, request, url_f
 
 import database
 from kurallar import teslim_uyarisi
+
+# Loglama: zaman, seviye ve mesaj biçiminde ekrana (stdout) yazılır
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+logger = logging.getLogger("odev-takip")
 
 app = Flask(__name__)
 # Flash mesajları için gizli anahtar. Canlı ortamda ortam değişkeninden okunacak.
@@ -40,9 +48,13 @@ def update_status(assignment_id):
     """F3: Ödev durumunu güncelleme."""
     yeni_durum = request.form.get("status", "")
     if database.update_status(assignment_id, yeni_durum):
+
         flash("Ödev durumu güncellendi.", "basari")
+        logger.info("Ödev durumu güncellendi: id=%s -> %s", assignment_id, yeni_durum)
     else:
         flash("Durum güncellenemedi.", "hata")
+        logger.warning("Geçersiz durum güncelleme denemesi: id=%s, durum=%r", assignment_id, yeni_durum)
+
 
     # Kullanıcı filtreli listedeyse aynı filtreye geri dön
     filtre = request.form.get("filtre", "")
@@ -62,10 +74,12 @@ def add():
 
         # Doğrulama: başlık ve teslim tarihi zorunlu
         if not title or not due_date:
+            logger.warning("Geçersiz ödev ekleme denemesi: başlık veya tarih boş")
             flash("Başlık ve teslim tarihi zorunludur.", "hata")
             return render_template("add.html", form=request.form), 400
 
         database.add_assignment(title, course, description, due_date)
+        logger.info("Ödev eklendi: %s (teslim: %s)", title, due_date)
         flash(
             f"Ödev eklendi! Toplam ödev sayısı: {database.count_assignments()}",
             "basari",
@@ -109,13 +123,21 @@ def delete(assignment_id):
     """F4: Ödev silme."""
     if database.delete_assignment(assignment_id):
         flash("Ödev silindi.", "basari")
+        logger.info("Ödev silindi: id=%s", assignment_id)
     else:
         flash("Ödev bulunamadı.", "hata")
+        logger.warning("Silinmek istenen ödev bulunamadı: id=%s", assignment_id)
     return redirect(url_for("index"))
 
 @app.route("/health")
 def health():
-    return {"status": "ok"}
+    """Sağlık kontrolü: uygulama ve veritabanı bağlantısı."""
+    try:
+        database.check_connection()
+        return {"status": "ok", "database": "ok"}
+    except Exception:
+        logger.exception("Health check başarısız: veritabanına erişilemiyor")
+        return {"status": "error", "database": "unreachable"}, 503
 
 
 if __name__ == "__main__":

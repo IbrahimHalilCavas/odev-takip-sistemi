@@ -17,7 +17,7 @@ def client(tmp_path, monkeypatch):
 def test_health_endpoint_ok_doner(client):
     yanit = client.get("/health")
     assert yanit.status_code == 200
-    assert yanit.get_json() == {"status": "ok"}
+    assert yanit.get_json() == {"status": "ok", "database": "ok"}
 
 
 def test_bos_basliklu_odev_eklenemez(client):
@@ -67,3 +67,16 @@ def test_durum_guncellemesinden_sonra_filtre_korunur(client):
 
     assert yanit.status_code == 302
     assert "status=Bekliyor" in yanit.headers["Location"]
+
+    
+
+def test_veritabani_erisilemezse_health_503_doner(client, monkeypatch):
+    def hata_ver():
+        raise RuntimeError("veritabanına erişilemiyor")
+
+    monkeypatch.setattr(database, "check_connection", hata_ver)
+
+    yanit = client.get("/health")
+
+    assert yanit.status_code == 503
+    assert yanit.get_json()["status"] == "error"
