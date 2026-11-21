@@ -122,3 +122,12 @@ def delete_assignment(assignment_id):
     conn.commit()
     conn.close()
     return cursor.rowcount > 0
+
+
+
+
+def check_connection():
+    """Health check için: veritabanına bağlanılabiliyor mu?"""
+    conn = get_connection()
+    conn.execute("SELECT 1")
+    conn.close()
