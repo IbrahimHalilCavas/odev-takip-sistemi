@@ -75,9 +75,33 @@ docker rm -f odev-app
 | `DB_PATH` | SQLite veritabanı dosyasının yolu | `src/odevler.db` |
 | `SECRET_KEY` | Flask oturum anahtarı | Geliştirme anahtarı |
 
+## ☁️ Bulut Dağıtımı (Cloud Deployment)
+
+Uygulama **Render** PaaS platformunda Docker container olarak çalışmaktadır.
+
+### Platform Seçimi
+| Platform | Ücretsiz Kullanım | Değerlendirme |
+|---|---|---|
+| **Render** ✅ | Ücretsiz web servisi, kredi kartı gerekmez | Dockerfile desteği, GitHub ile otomatik deploy, panelde log ve metrikler |
+| Railway | Yalnızca kısa süreli deneme kredisi | 8 haftalık dönem için sürdürülebilir değil |
+| Azure / Google Cloud Run | Ücretsiz katman mevcut | Genellikle kredi kartı gerekir, kurulum daha karmaşık |
+
+**Seçim gerekçesi:** Render; mevcut Dockerfile'ı doğrudan kullanabilmesi, GitHub `main` dalına yapılan her merge'de otomatik yeniden dağıtım (CD) yapması ve panelinden log/metrik izlenebilmesi nedeniyle seçilmiştir.
+
+### Yapılandırma
+- **Bölge:** Frankfurt (EU Central), Türkiye'ye en yakın bölge
+- **Health Check:** `/health` endpoint'i Render tarafından düzenli olarak kontrol edilir
+- **Ortam değişkenleri:** `SECRET_KEY` (Render'da gizli olarak tutulur), `TZ=Europe/Istanbul`
+- **Port:** Render'ın verdiği `PORT` ortam değişkeni Dockerfile'da kullanılır
+
+### Bilinen Sınırlamalar (Ücretsiz Katman)
+- **Uyku modu:** 15 dakika istek almayan servis uyutulur; ilk istek ~1 dakika sürebilir.
+- **Geçici dosya sistemi:** SQLite veritabanı kalıcı değildir; servis yeniden başladığında veya yeniden dağıtıldığında veriler sıfırlanır. Kalıcı veri için ücretli plandaki kalıcı disk veya yönetilen bir veritabanı (ör. PostgreSQL) kullanılabilir.
+
 ## 🔗 Bağlantılar
 - **Kanban Panosu:** https://github.com/users/IbrahimHalilCavas/projects/2
-- **Canlı Uygulama:** *(6. haftada eklenecek)*
+- **Canlı Uygulama:** https://odev-takip-sistemi.onrender.com
+- **Sağlık Kontrolü:** https://odev-takip-sistemi.onrender.com/health
 
 ## 👤 Geliştirici
 İbrahim Halil Çavaş – Beykoz Üniversitesi, Yazılım Mühendisliği
