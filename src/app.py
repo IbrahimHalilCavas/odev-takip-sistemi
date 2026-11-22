@@ -20,6 +20,17 @@ app.secret_key = os.environ.get("SECRET_KEY", "gelistirme-anahtari")
 # F5: Şablonlarda teslim_uyarisi() fonksiyonu kullanılabilsin
 app.jinja_env.globals["teslim_uyarisi"] = teslim_uyarisi
 
+# Güvenlik: Çok büyük istekleri reddet (16 KB) – aşırı yüklemeye karşı
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
+
+
+@app.after_request
+def guvenlik_basliklari_ekle(yanit):
+    """Güvenlik: Her yanıta temel güvenlik başlıklarını ekler."""
+    yanit.headers["X-Content-Type-Options"] = "nosniff"
+    yanit.headers["X-Frame-Options"] = "DENY"
+    yanit.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return yanit
 # Uygulama açılırken tablo yoksa oluştur
 database.init_db()
 

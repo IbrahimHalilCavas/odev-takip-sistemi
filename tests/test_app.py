@@ -80,3 +80,20 @@ def test_veritabani_erisilemezse_health_503_doner(client, monkeypatch):
 
     assert yanit.status_code == 503
     assert yanit.get_json()["status"] == "error"
+    
+
+def test_yanitlarda_guvenlik_basliklari_vardir(client):
+    yanit = client.get("/health")
+
+    assert yanit.headers["X-Content-Type-Options"] == "nosniff"
+    assert yanit.headers["X-Frame-Options"] == "DENY"
+    assert "Referrer-Policy" in yanit.headers
+
+
+def test_cok_buyuk_istek_reddedilir(client):
+    yanit = client.post(
+        "/add",
+        data={"title": "Büyük", "due_date": "2026-12-01", "description": "a" * 20000},
+    )
+
+    assert yanit.status_code == 413
