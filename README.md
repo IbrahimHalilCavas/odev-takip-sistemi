@@ -20,6 +20,7 @@ yazılım geliştirme, DevOps ve Cloud süreçlerini uygulamalı olarak öğrenm
 3. **Durum güncelleme** – Bekliyor → Devam Ediyor → Teslim Edildi
 4. **Düzenleme ve silme** – Mevcut ödevi güncelleme veya silme
 5. **Gecikme uyarısı** – Tarihi geçen ödevleri "Gecikti", 3 gün içindekileri "Yaklaşıyor" olarak işaretleme
+6. **Takvim entegrasyonu** – Teslim edilmemiş ödevleri iCalendar (.ics) olarak indirme (teslimden önceki gün 09:00 hatırlatmalı) ve her ödevi tek tıkla Google Takvim'e ekleme
 
 ## 📋 Fonksiyonel Gereksinimler
 - FR1: Kullanıcı başlık, ders adı, açıklama ve teslim tarihi girerek ödev ekleyebilmelidir.
@@ -28,7 +29,7 @@ yazılım geliştirme, DevOps ve Cloud süreçlerini uygulamalı olarak öğrenm
 - FR4: Kullanıcı ödevin durumunu değiştirebilmeli ve duruma göre filtreleyebilmelidir.
 - FR5: Kullanıcı bir ödevi düzenleyebilmeli ve onay vererek silebilmelidir.
 - FR6: Sistem teslim tarihi geçmiş ve yaklaşan ödevleri görsel olarak işaretlemelidir.
-
+- FR7: Kullanıcı teslim edilmemiş ödevlerini standart takvim dosyası olarak indirebilmeli ve tek bir ödevi Google Takvim'e ekleyebilmelidir.
 ## 🚀 Kurulum ve Çalıştırma
 
 **Gereksinimler:** Python 3.10+ ve Git

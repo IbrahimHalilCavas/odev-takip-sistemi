@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>📅 Ödevlerini Takvimine Ekle</h2>
+<p>Teslim tarihlerini takviminde gör, hiçbir ödevi kaçırma.</p>
+
+{% if odevler %}
+<h3>Takvime eklenecek ödevler ({{ odevler | length }})</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Ödev</th>
+      <th>Teslim Tarihi</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for odev in odevler %}
+    <tr>
+      <td>
+        <strong>{{ odev.title }}</strong>
+        {% if odev.course %}<br><small>{{ odev.course }}</small>{% endif %}
+      </td>
+      <td>{{ odev.due_date | tarih }}</td>
+      <td>
+        <a href="{{ google_takvim_linki(odev) }}" target="_blank" rel="noopener noreferrer">Google Takvim'e ekle</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="kutu">
+   <h3>Hepsini tek seferde ekle</h3>
+  <p>Dosyayı takvim uygulamanda açtığında yukarıdaki <strong>{{ odevler | length }} ödevin tamamı</strong> takvimine tek seferde eklenir ve kaydedilir. Tek tek eklemene gerek kalmaz.</p>
+  <a class="buton" href="{{ url_for('takvim_dosyasi') }}">📥 Takvim dosyasını indir</a>
+  <p><small>Takvim uygulaman destekliyorsa her ödev için teslimden önceki gün saat 09:00'da hatırlatma da eklenir.</small></p>
+  <ul>
+    <li>📱 <strong>Telefonda:</strong> İnen dosyaya dokun → takvim uygulaman açılır → "Ekle"ye bas.</li>
+    <li>💻 <strong>Bilgisayarda:</strong> Google Takvim → ⚙️ Ayarlar → İçe ve dışa aktar → dosyayı seç.</li>
+  </ul>
+  <small>Not: Teslim edilmiş ödevler takvime eklenmez.</small>
+</div>
+{% else %}
+<p>Takvime eklenecek ödev yok. Teslim edilmemiş ödevlerin burada listelenir.
+  <a href="{{ url_for('add') }}">Ödev ekle</a>.</p>
+{% endif %}
+{% endblock %}

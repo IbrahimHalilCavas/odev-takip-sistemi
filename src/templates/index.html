@@ -50,6 +50,10 @@
         </form>
       </td>
             <td>
+        {% if odev.status != "Teslim Edildi" %}
+        <a href="{{ google_takvim_linki(odev) }}" target="_blank" rel="noopener noreferrer"
+           title="Google Takvim'e ekle">+ Takvim</a>
+        {% endif %}
         <a href="{{ url_for('edit', assignment_id=odev.id) }}">Düzenle</a>
         <form method="post" action="{{ url_for('delete', assignment_id=odev.id) }}"
               style="display:inline"
