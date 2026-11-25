@@ -17,6 +17,8 @@
         .etiket { font-size: 12px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; white-space: nowrap; }
     .gecikti { background: #fde2e2; color: #a30000; }
     .yaklasiyor { background: #fff3cd; color: #8a6d00; }
+        .kutu { background: #f4f6fb; border-radius: 8px; padding: 12px 16px; margin-top: 24px; }
+    .buton { display: inline-block; background: #2f6fed; color: #fff; padding: 8px 14px; border-radius: 6px; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -24,6 +26,7 @@
   <nav>
     <a href="{{ url_for('index') }}">Ana Sayfa</a>
     <a href="{{ url_for('add') }}">+ Yeni Ödev</a>
+    <a href="{{ url_for('takvim_sayfasi') }}">📅 Takvime Aktar</a>
   </nav>
   <hr>
 

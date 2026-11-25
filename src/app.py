@@ -2,10 +2,11 @@ import logging
 import os
 from datetime import datetime
 
-from flask import Flask, abort, flash, redirect, render_template, request, url_for
+from flask import Flask,Response, abort, flash, redirect, render_template, request, url_for
 
 import database
 from kurallar import teslim_uyarisi
+from takvim import google_takvim_linki, takvim_olustur
 
 # Loglama: zaman, seviye ve mesaj biçiminde ekrana (stdout) yazılır
 logging.basicConfig(
@@ -19,6 +20,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "gelistirme-anahtari")
 # F5: Şablonlarda teslim_uyarisi() fonksiyonu kullanılabilsin
 app.jinja_env.globals["teslim_uyarisi"] = teslim_uyarisi
+app.jinja_env.globals["google_takvim_linki"] = google_takvim_linki
 
 # Güvenlik: Çok büyük istekleri reddet (16 KB) – aşırı yüklemeye karşı
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
@@ -139,6 +141,28 @@ def delete(assignment_id):
         flash("Ödev bulunamadı.", "hata")
         logger.warning("Silinmek istenen ödev bulunamadı: id=%s", assignment_id)
     return redirect(url_for("index"))
+
+@app.route("/takvim")
+def takvim_sayfasi():
+    """F6: Takvime aktarma rehber sayfası (eklenecek ödevleri önceden gösterir)."""
+    odevler = [
+        odev for odev in database.get_assignments()
+        if odev["status"] != "Teslim Edildi"
+    ]
+    return render_template("takvim.html", odevler=odevler)
+
+
+@app.route("/takvim.ics")
+def takvim_dosyasi():
+    """F6: Teslim edilmemiş ödevleri iCalendar (.ics) dosyası olarak indirir."""
+    odevler = database.get_assignments()
+    kalan = sum(1 for odev in odevler if odev["status"] != "Teslim Edildi")
+    logger.info("Takvim dosyası indirildi: %d ödev", kalan)
+    return Response(
+        takvim_olustur(odevler),
+        mimetype="text/calendar",
+        headers={"Content-Disposition": "attachment; filename=odevlerim.ics"},
+    )
 
 @app.route("/health")
 def health():

@@ -97,3 +97,31 @@ def test_cok_buyuk_istek_reddedilir(client):
     )
 
     assert yanit.status_code == 413
+
+    
+
+def test_takvim_dosyasi_indirilir(client):
+    database.add_assignment("Takvim Testi", "Bulut", "", "2026-12-01")
+
+    yanit = client.get("/takvim.ics")
+
+    assert yanit.status_code == 200
+    assert yanit.mimetype == "text/calendar"
+    assert "attachment" in yanit.headers["Content-Disposition"]
+    assert "Takvim Testi" in yanit.get_data(as_text=True)
+
+    
+
+def test_takvim_sayfasi_sadece_teslim_edilmemis_odevleri_listeler(client):
+    database.add_assignment("Listelenecek Ödev", "", "", "2026-12-01")
+    database.add_assignment("Bitmiş Ödev", "", "", "2026-12-02")
+    bitmis = [o for o in database.get_assignments() if o["title"] == "Bitmiş Ödev"][0]
+    database.update_status(bitmis["id"], "Teslim Edildi")
+
+    yanit = client.get("/takvim")
+    sayfa = yanit.get_data(as_text=True)
+
+    assert yanit.status_code == 200
+    assert "Listelenecek Ödev" in sayfa
+    assert "Bitmiş Ödev" not in sayfa
+    assert "/takvim.ics" in sayfa
